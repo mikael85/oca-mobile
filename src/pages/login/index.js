@@ -104,13 +104,16 @@ export default class SignInScreen extends React.Component {
       this.state.user,
       this.state.password,
     );
-    const database_list = await odoo_api.database_list;
+    // const database_list = await odoo_api.database_list;
+    const database_list = await odoo_api._getDatabases();
 
     if (database_list && database_list.length) {
       if (database_list.length === 1) {
         this.state.database = database_list[0];
       } else {
-        console.error('Not implemented');
+        // console.error('Not implemented');
+        console.log(database_list);
+        this.state.database = database_list[0];
       }
       var connection = await odoo_api.connect(this.state.database);
       if (typeof connection.uid === 'number') {
@@ -118,8 +121,8 @@ export default class SignInScreen extends React.Component {
         await AsyncStorage.setItem('user_display_name', connection.name);
         await AsyncStorage.setItem('user_uid', connection.uid.toString());
         await AsyncStorage.setItem('database', connection.db);
-        const imagem = await odoo_api.get_user_image(connection.uid);
-        await AsyncStorage.setItem('image_small', imagem);
+        const imagen = await odoo_api.get_user_image(connection.uid);
+        await AsyncStorage.setItem('image_small', imagen);
         await AsyncStorage.setItem(
           'server_backend_url',
           odoo_api.server_backend_url,
@@ -128,7 +131,7 @@ export default class SignInScreen extends React.Component {
           url: odoo_api.server_backend_url,
         });
       } else {
-        alert('Senha incorreta');
+        alert('Wrong password');
       }
     } else {
       // empty
